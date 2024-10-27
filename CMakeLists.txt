@@ -11,9 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Include directories
 include_directories(include src)  # Add both 'include' and 'src' directories
 
-# Find all .cpp files in the src directory and add them to the executable
-file(GLOB SRC_FILES src/*.cpp)
-
 # Add the executable
 set(ASSETS_PATH "${CMAKE_SOURCE_DIR}/assets")
 add_executable(Stringer src/main.cpp src/Stopwatch.cpp src/Image.cpp)
