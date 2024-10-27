@@ -39,22 +39,16 @@ int main() {
     pointCloud.render("cutoutChopper.png");
     timer.lap("Saving cutout image");
 
-    // for (int i = 0; i < NAILS / 2; i++) {
-    //     const float angle = (float)i / NAILS * TAU;
-    //     const float cos = std::cos(angle);
-    //     const float sin = std::sin(angle);
-    //     for (int x = 0; x < img.width(); x++) {
-    //         for (int y = 0; y < img.height(); y++) {
-    //             const double brightness = grayscale[y*img.width() + x];
-    //             if (brightness != 0) {
-    //                 const float projection = x * cos + y * sin;
+    for (int i = 0; i < NAILS / 2; i++) {
+        const float angle = (float)i / NAILS * TAU;
+        const float cos = std::cos(angle);
+        const float sin = std::sin(angle);
 
-
-    //             }
-    //         }
-    //     }
-    // }
-    // timer.lap("Loop");
+        for (Point point : pointCloud) {
+            const float projection = point.x * cos + point.y * sin;
+        }
+    }
+    timer.lap("Loop");
 
     timer.stop("Total");
     return 0;
