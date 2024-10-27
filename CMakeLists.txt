@@ -13,5 +13,5 @@ include_directories(include src)  # Add both 'include' and 'src' directories
 
 # Add the executable
 set(ASSETS_PATH "${CMAKE_SOURCE_DIR}/assets")
-add_executable(Stringer src/main.cpp src/Stopwatch.cpp src/Image.cpp)
+add_executable(Stringer src/main.cpp src/Stopwatch.cpp src/Image.cpp src/PointCloud.cpp)
 target_compile_definitions(Stringer PRIVATE ASSETS_PATH="${ASSETS_PATH}")
