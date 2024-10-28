@@ -6,12 +6,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 #define PI 3.14159265359
 #define TAU 6.28318530718
 
-#define NAILS 100
-#define THREAD_WIDTH 1 // Pixels
+#define NAILS 10
+#define THREAD_WIDTH 3 // Pixels
 
 struct Bin {
     float pos;
@@ -53,12 +54,12 @@ int main() {
     std::vector<Bin> lines_on;
     for (int nail = 1; nail < NAILS / 2; nail++) {
         const float angle = (float)nail / NAILS * TAU;
-        lines_on.push_back(Bin{std::cos(angle),1});
+        lines_on.push_back(Bin{std::cos(angle),THREAD_WIDTH});
     }
     std::vector<Bin> lines_between;
     for (int nail = 0; nail < NAILS / 2; nail++) {
         const float angle = (nail + 0.5) / NAILS * TAU;
-        lines_between.push_back(Bin{std::cos(angle),1});
+        lines_between.push_back(Bin{std::cos(angle),THREAD_WIDTH});
     }
     timer.lap("Calculate bins");
 
@@ -87,7 +88,8 @@ int main() {
     unsigned char* image = new unsigned char[NAILS * NAILS]();
     for (int n1 = 0; n1 < NAILS; n1++) {
         for (int n2 = 0; n2 < NAILS; n2++) {
-            image[n1 + NAILS * n2] = (unsigned char)(line_intensities[n1][n2] / max_intensity * 255);
+            // std::cout << "N1: " << n1 << " | N2: " << n2 << " | I: " << line_intensities[n1][n2] / max_intensity << std::endl;
+            image[n1 + NAILS * (NAILS - n2 - 1)] = (unsigned char)(line_intensities[n1][n2] / max_intensity * 255);
         }
     }
     stbi_write_png("transform.png", NAILS, NAILS, 1, image, NAILS);
