@@ -12,14 +12,14 @@
 #define TAU 6.28318530718
 
 #define NAILS 10
-#define THREAD_WIDTH 3 // Pixels
+#define THREAD_WIDTH 1 // Pixels
 
 struct Bin {
     float pos;
     float width;
 
     bool isIn(const float &point) {
-        return (point > pos - width / 2) && (pos + width / 2 < point);
+        return (point > pos - width / 2) && (point < pos + width / 2);
     }
 };
 
@@ -27,7 +27,7 @@ int main() {
     Stopwatch timer;
     timer.start();
 
-    Image img(ASSETS_PATH"/chopper.png");
+    Image img(ASSETS_PATH"/white.png");
     timer.lap("Loading image");
 
 
@@ -66,12 +66,12 @@ int main() {
     float line_intensities[NAILS][NAILS] = {0};
     float max_intensity = 0;
     for (int nail = 0; nail < NAILS / 2; nail++) {
-        const float angle = (float)nail / NAILS * TAU;
-        const float cos = std::cos(angle);
-        const float sin = std::sin(angle);
+        float angle = (float)nail / NAILS * TAU;
+        float cos = std::cos(angle);
+        float sin = std::sin(angle);
 
         for (Point point : pointCloud) {
-            const float projection = point.x * cos + point.y * sin;
+            const float projection = (point.x * cos + point.y * sin) / (img.width() / 2);
         
             for (int line = 0; line < lines_on.size(); line++) {
                 if (lines_on[line].isIn(projection)) {
@@ -82,14 +82,31 @@ int main() {
                 }
             }
         }
+
+        angle = (nail + 0.5) / NAILS * TAU;
+        cos = std::cos(angle);
+        sin = std::sin(angle);
+
+        for (Point point : pointCloud) {
+            const float projection = (point.x * cos + point.y * sin) / (img.width() / 2);
+        
+            for (int line = 0; line < lines_between.size(); line++) {
+                if (lines_between[line].isIn(projection)) {
+                    line_intensities[nail + line + 1][(NAILS + nail - line) % NAILS] += point.data;
+                    if (line_intensities[nail + line + 1][(NAILS + nail - line) % NAILS] > max_intensity) {
+                        max_intensity = line_intensities[nail + line + 1][(NAILS + nail - line) % NAILS];
+                    }
+                }
+            }
+        }
     }
     timer.lap("Loop");
 
     unsigned char* image = new unsigned char[NAILS * NAILS]();
     for (int n1 = 0; n1 < NAILS; n1++) {
         for (int n2 = 0; n2 < NAILS; n2++) {
-            // std::cout << "N1: " << n1 << " | N2: " << n2 << " | I: " << line_intensities[n1][n2] / max_intensity << std::endl;
-            image[n1 + NAILS * (NAILS - n2 - 1)] = (unsigned char)(line_intensities[n1][n2] / max_intensity * 255);
+            std::cout << "N1: " << n1 << " | N2: " << n2 << " | I: " << line_intensities[n1][n2] / max_intensity << std::endl;
+            image[n1 + NAILS * (NAILS - n2 - 1)] = (unsigned char)((line_intensities[n1][n2] + line_intensities[n2][n1]) / max_intensity * 255);
         }
     }
     stbi_write_png("transform.png", NAILS, NAILS, 1, image, NAILS);
