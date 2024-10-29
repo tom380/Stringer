@@ -48,7 +48,7 @@ int main() {
     }
     timer.lap("Making pointcloud");
 
-    pointCloud.render("cutoutChopper.png");
+    pointCloud.render("cutout.png");
     timer.lap("Saving cutout image");
 
     std::vector<Bin> lines_on;
