@@ -105,7 +105,7 @@ int main() {
     unsigned char* image = new unsigned char[NAILS * NAILS]();
     for (int n1 = 0; n1 < NAILS; n1++) {
         for (int n2 = 0; n2 < NAILS; n2++) {
-            std::cout << "N1: " << n1 << " | N2: " << n2 << " | I: " << line_intensities[n1][n2] / max_intensity << std::endl;
+            // std::cout << "N1: " << n1 << " | N2: " << n2 << " | I: " << line_intensities[n1][n2] / max_intensity << std::endl;
             image[n1 + NAILS * (NAILS - n2 - 1)] = (unsigned char)((line_intensities[n1][n2] + line_intensities[n2][n1]) / max_intensity * 255);
         }
     }
